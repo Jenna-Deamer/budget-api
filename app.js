@@ -32,7 +32,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {})
 
 //map routes
 const transactionsController = require('./controllers/transactions');
-app.use('/api/transactions',transactionsController);
+app.use('/v1/api/transactions',transactionsController);
 
 // route any requests at the root to load the angular front-end app
 // app.use(express.static(__dirname + '/public'));
