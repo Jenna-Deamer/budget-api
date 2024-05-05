@@ -16,9 +16,11 @@ router.get("/", async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const transaction = await Transaction.create(req.body);
-    return res.json(transaction).status(201); //201: Resource
+    console.log("Transaction created:", transaction); // Log the created transaction
+    return res.json(transaction).status(201); // Respond with the created transaction
   } catch (err) {
-    return res.json(err).status(400);
+    console.error("Error creating transaction:", err); // Log any errors that occur during transaction creation
+    return res.json(err).status(400); // Respond with the error status and message
   }
 });
 
