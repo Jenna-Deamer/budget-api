@@ -15,24 +15,25 @@ app.use(bodyParser.json());
 // db conn
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
-    
+
     // CORS in dev mode to accept requests from localhost:4200
     // not needed in prod as angular app runs on same domain
     const cors = require('cors');
     app.use(cors({
-        origin: process.env.CLIENT_URL,
+        // origin: process.env.CLIENT_URL,
+        origin: '*',
         methods: 'GET,POST,PUT,DELETE,HEAD,OPTIONS'
     }));
 }
 
 mongoose.connect(process.env.CONNECTION_STRING, {})
-.then((res) => { console.log ('Connected to MongoDB'); })
-.catch((err) => { console.log (`DB Connection Failed ${err}`); });
+    .then((res) => { console.log('Connected to MongoDB'); })
+    .catch((err) => { console.log(`DB Connection Failed ${err}`); });
 
 
 //map routes
 const transactionsController = require('./controllers/transactions');
-app.use('/v1/api/transactions',transactionsController);
+app.use('/v1/api/transactions', transactionsController);
 
 // route any requests at the root to load the angular front-end app
 // app.use(express.static(__dirname + '/public'));

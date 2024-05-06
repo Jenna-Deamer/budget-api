@@ -28,24 +28,25 @@ router.post('/', async (req, res, next) => {
 /* DELETE: /api/transaction/abc123 => delete selected transaction */
 router.delete('/:_id', async (req, res, next) => {
   try {
-      await Transaction.findByIdAndDelete(req.params._id);
-      return res.json({}).status(204); // 204: No Content
+    await Transaction.findByIdAndDelete(req.params._id);
+    return res.json({}).status(204); // 204: No Content
   }
-  catch(err) {
-      return res.json(err).status(404); //not Found
+  catch (err) {
+    return res.json(err).status(404); //not Found
   }
 });
 
 /* GET: /api/transactions/:id => get transaction by ID */
 router.get('/:_id', async (req, res, next) => {
   try {
-    await Transaction.findById(req.params._id);
-    
-    if (!Transaction) {
+    const transaction = await Transaction.findById(req.params._id);
+
+    //if empty/null return 404
+    if (!transaction) {
       return res.status(404).json({ error: 'Transaction not found' });
     }
 
-    res.json(Transaction);
+    return res.json(transaction).status(200); //if found, return OK
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
@@ -53,14 +54,17 @@ router.get('/:_id', async (req, res, next) => {
 });
 
 /*PUT: /api/transactions/abc123 => update selected transaction */
-router.put('/:_id',async (req,res,next) =>{
-  try{
-    let transaction = await Transaction.findByIdAndUpdate(req.params._id, req.body);
-    return res.json(transaction).status(202) ///202: Resource Modified 
-  }
-  catch(err){
-    return res.json(err).status(404); //not found
+router.put('/:_id', async (req, res, next) => {
+  try {
+    const transaction = await Transaction.findByIdAndUpdate(req.params._id, req.body, { new: true });
+    if (!transaction) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+    return res.json(transaction).status(200);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 });
+
 //make public
 module.exports = router;
