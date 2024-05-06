@@ -12,6 +12,7 @@ router.get("/", async (req, res, next) => {
     return res.json(err).status(400); //400: Bad Request
   }
 });
+
 /*POST: /api/transactions => create new transaction from http req body */
 router.post('/', async (req, res, next) => {
   try {
@@ -24,5 +25,42 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+/* DELETE: /api/transaction/abc123 => delete selected transaction */
+router.delete('/:_id', async (req, res, next) => {
+  try {
+      await Transaction.findByIdAndDelete(req.params._id);
+      return res.json({}).status(204); // 204: No Content
+  }
+  catch(err) {
+      return res.json(err).status(404); //not Found
+  }
+});
+
+/* GET: /api/transactions/:id => get transaction by ID */
+router.get('/:_id', async (req, res, next) => {
+  try {
+    await Transaction.findById(req.params._id);
+    
+    if (!Transaction) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    res.json(Transaction);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/*PUT: /api/transactions/abc123 => update selected transaction */
+router.put('/:_id',async (req,res,next) =>{
+  try{
+    let transaction = await Transaction.findByIdAndUpdate(req.params._id, req.body);
+    return res.json(transaction).status(202) ///202: Resource Modified 
+  }
+  catch(err){
+    return res.json(err).status(404); //not found
+  }
+});
 //make public
 module.exports = router;
