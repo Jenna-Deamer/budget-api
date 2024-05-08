@@ -35,6 +35,9 @@ mongoose.connect(process.env.CONNECTION_STRING, {})
 const transactionsController = require('./controllers/transactions');
 app.use('/v1/api/transactions', transactionsController);
 
+const goalsController = require('./controllers/goals');
+app.use('/v1/api/goals', goalsController);
+
 // route any requests at the root to load the angular front-end app
 // app.use(express.static(__dirname + '/public'));
 // app.get('*', (req, res) => res.sendFile(__dirname + '/app/index.html'));
