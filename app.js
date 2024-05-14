@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const User = require('./models/user');
+// const User = require('./models/user');
 
 // create express app & set all content to json
 const app = express();
@@ -35,8 +35,9 @@ mongoose
     .catch((err) => {
         console.log(`DB Connection Failed ${err}`);
     });
-    
-// configure session
+
+//passport setup
+// 1. configure session
 app.use(
     session({
         secret: process.env.PASSPORT_SECRET,
@@ -45,21 +46,17 @@ app.use(
     })
 );
 
-// initialize Passport w/sessions
+//  2. initialize Passport w/sessions
 app.use(passport.initialize());
 app.use(passport.session());
 
-//local strategy
-passport.use(new LocalStrategy(
-    function(username, password, done) {
-      User.findOne({ username: username }, function (err, user) {
-        if (err) { return done(err); }
-        if (!user) { return done(null, false); }
-        if (!user.verifyPassword(password)) { return done(null, false); }
-        return done(null, user);
-      });
-    }
-  ));
+// 3. link passport to our User model & use local strategy by default
+let User = require('./models/user');
+passport.use(User.createStrategy());
+
+// 4. enable session reads / writes for passport users
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //map routes
 const transactionsController = require("./controllers/transactions");
