@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-// const User = require('./models/user');
 
 // create express app & set all content to json
 const app = express();
@@ -50,7 +49,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// 3. link passport to our User model & use local strategy by default
+// 3. link passport to User model & use local strategy by default
 let User = require('./models/user');
 passport.use(User.createStrategy());
 
