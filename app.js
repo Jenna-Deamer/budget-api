@@ -6,6 +6,8 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
+const authenticateUser = require('./authenticateUser');
+
 // create express app & set all content to json
 const app = express();
 app.use(bodyParser.json());
@@ -59,10 +61,10 @@ passport.deserializeUser(User.deserializeUser());
 
 //map routes
 const transactionsController = require("./controllers/transactions");
-app.use("/v1/api/transactions", transactionsController);
+app.use("/v1/api/transactions", authenticateUser, transactionsController);
 
 const goalsController = require("./controllers/goals");
-app.use("/v1/api/goals", goalsController);
+app.use("/v1/api/goals", authenticateUser, goalsController);
 
 const authController =  require("./controllers/auth");
 app.use("/v1/api/users", authController);
